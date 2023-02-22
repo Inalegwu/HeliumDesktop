@@ -5,7 +5,7 @@
 **Contributing**
 
 ```
-    git clone https://github.com/Inalegwu/Helium.git
+    git clone https://github.com/Inalegwu/HeliumDesktop.git
     cd Helium
 
     NPM
