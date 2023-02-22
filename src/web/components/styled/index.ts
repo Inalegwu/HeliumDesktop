@@ -29,3 +29,4 @@ export * from "./TitleButton";
 export * from "./typography/Heading";
 export * from "./typography/Subtitle";
 export * from "./typography/Title";
+export * from "./RecentDocsBox";

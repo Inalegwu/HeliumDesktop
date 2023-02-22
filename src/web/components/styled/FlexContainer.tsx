@@ -2,6 +2,7 @@ import styled from "styled-components";
 
 export interface FlexContainerProps {
   background: string;
+  blurred?: boolean;
 }
 
 export const FlexContainer = styled.div`

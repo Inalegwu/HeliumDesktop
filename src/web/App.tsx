@@ -6,6 +6,7 @@ import {
   HiDocumentAdd,
   HiDownload,
   HiHashtag,
+  HiOutlineDotsVertical,
   HiRefresh,
   HiSave,
 } from "react-icons/hi";
@@ -72,8 +73,6 @@ function App() {
   const marked = (text: string) => {
     console.log(text);
   };
-
-  window.electronAPI.readSettings();
 
   return (
     <Background>
@@ -161,7 +160,7 @@ function App() {
             <Flex>
               <div
                 style={{
-                  width: "80%",
+                  width: "70%",
                   display: "flex",
                   justifyContent: "flex-start",
                 }}
@@ -188,7 +187,7 @@ function App() {
               <div
                 style={{
                   display: "flex",
-                  width: "20%",
+                  width: "30%",
                   justifyContent: "flex-end",
                   alignContent: "center",
                   alignItems: "center",
@@ -206,6 +205,7 @@ function App() {
                     alignContent: "center",
                     alignItems: "center",
                     borderRadius: "5px",
+                    marginRight: "5px",
                   }}
                 >
                   <HiCloudDownload
@@ -213,6 +213,26 @@ function App() {
                     color={colorMode === "light" ? "#000000" : "#ffffff"}
                   />
                 </button>
+                <Link
+                  to="/recent_files"
+                  title="Recent Files"
+                  style={{
+                    border: "none",
+                    background: "#ececec40",
+                    width: "30%",
+                    height: "40px",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignContent: "center",
+                    alignItems: "center",
+                    borderRadius: "5px",
+                  }}
+                >
+                  <HiOutlineDotsVertical
+                    size={20}
+                    color={colorMode === "light" ? "#000000" : "#ffffff"}
+                  />
+                </Link>
               </div>
             </Flex>
           </Box>

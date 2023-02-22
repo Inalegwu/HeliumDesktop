@@ -80,7 +80,7 @@ export default function ChangeColorView() {
               style={{
                 border: "none",
                 padding: "10px",
-                borderRadius: "10px",
+                borderRadius: "5px",
                 marginTop: "10px",
               }}
               onChange={(e) => {
@@ -95,7 +95,7 @@ export default function ChangeColorView() {
               style={{
                 border: "none",
                 padding: "10px",
-                borderRadius: "10px",
+                borderRadius: "5px",
                 marginTop: "10px",
               }}
               onChange={(e) => {

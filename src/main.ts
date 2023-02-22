@@ -1,7 +1,22 @@
 import path from "path";
-import { BrowserWindow, dialog, ipcMain, Menu, MenuItem, app } from "electron";
+import {
+  BrowserWindow,
+  dialog,
+  ipcMain,
+  Menu,
+  MenuItem,
+  app,
+  screen,
+} from "electron";
 import fs from "fs";
 import process from "process";
+import { atom } from "jotai";
+
+export interface Settings {
+  blurColor1: string;
+  blurColor2: string;
+  colorMode: string;
+}
 
 declare global {
   interface Window {
@@ -21,17 +36,16 @@ function handleSaveSettings(event: any, settings: any) {
   );
 }
 
-function readSavedSettings(event: any): Object {
+function readSavedSettings(event: any) {
   const getPath = path.join(app.getPath("appData"), "helium/settings.json");
   const content = fs.readFileSync(getPath, "utf-8");
 
   const parsed = JSON.parse(content);
-
-  console.log(parsed);
-  return parsed;
 }
 
 function createWindow() {
+  const primaryDisplay = screen.getPrimaryDisplay();
+  const { width, height } = primaryDisplay.workAreaSize;
   const mainWindow = new BrowserWindow({
     resizable: true,
     frame: false,
