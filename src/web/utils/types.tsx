@@ -8,3 +8,8 @@ export interface NoteType {
   title: string;
   content: string;
 }
+
+export enum Action {
+  CHANGE_COLOR = "CHANGE COLOR",
+  SYNC = "SYNC",
+}

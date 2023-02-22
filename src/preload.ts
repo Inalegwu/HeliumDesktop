@@ -3,7 +3,6 @@ import { contextBridge, ipcRenderer } from "electron";
 console.log("preloaded!");
 
 contextBridge.exposeInMainWorld("electronAPI", {
-  openFile: () => {
-    ipcRenderer.invoke("dialog:openFile");
-  },
+  saveSettings: (settings: any) => ipcRenderer.send("save-settings", settings),
+  readSettings: () => ipcRenderer.send("read-settings"),
 });

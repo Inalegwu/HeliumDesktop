@@ -2,10 +2,10 @@ import styled from "styled-components";
 
 export const SideNav = styled.div`
   display: flex;
-  justify-content: flex-start;
+  padding: 2px;
+  justify-content: space-between;
   align-items: center;
   align-content: center;
   height: 4vh;
-  padding: 6px;
   align-items: center;
 `;

@@ -1,5 +1,9 @@
 import styled from "styled-components";
 
+export interface InputProps {
+  placeholderColor?: string;
+}
+
 export const Input = styled.input`
   padding: 12px;
   border: none;
@@ -9,7 +13,8 @@ export const Input = styled.input`
   backdrop-filter: blur(200px);
   border-radius: 5px;
   ::placeholder {
-    color: #29292985;
+    color: ${(props: InputProps) =>
+      props.placeholderColor ? props.placeholderColor : "#29292985"};
   }
 
   :active {

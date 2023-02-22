@@ -14,6 +14,6 @@ export const TagBox = styled.input`
     outline: none;
   }
   ::placeholder {
-    color: "#ECECEC";
+    color: "#c7c7c775";
   }
 `;
