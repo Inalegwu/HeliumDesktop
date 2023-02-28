@@ -11,7 +11,7 @@ import {
   HiSave,
 } from "react-icons/hi";
 import Sidebar from "./components/Sidebar";
-import { NoteType, States } from "./utils/types";
+import { NoteType, Settings, States } from "./utils/types";
 import { useAtom } from "jotai";
 import { colorModeAtom, colorsAtom, noteAtom } from "./atoms";
 import { Link } from "react-router-dom";
@@ -40,9 +40,8 @@ import {
   Body,
   Background,
   ActionNav,
+  CircleBox,
 } from "./components/styled/index";
-
-const NOTES: NoteType[] = [];
 
 import "./App.css";
 
@@ -51,57 +50,75 @@ function App() {
   const [tagViewVisible, setTagViewVisible] = useState<boolean>(false);
   const [noteText, setNoteText] = useState<string>("");
   const [tag, setTag] = useState<string>("");
-  const [notes, setNotes] = useState<NoteType[]>([]);
+  const [pages, setPages] = useState<NoteType[]>([]);
+  // for checking the state of the window size (aids with scaling)
   const [isReduced, setIsReduced] = useState<boolean>(false);
   const [note, setNoteAtom] = useAtom(noteAtom);
-  const [colors] = useAtom(colorsAtom);
-  const [colorMode] = useAtom(colorModeAtom);
+
+  // handles the color of the background image splotches ( if the values from settings is undefined it
+  // defaults to the application defined settings other wise it uses the users most recently saved values)
+  const [colors, setColors] = useAtom(colorsAtom);
+  // handles the color mode of the UI [light or dark] eventually , I will add support for
+  // theme.json files that can be read into the application to affect the color schemes of the
+  // color modes
+  const [colorMode, setColorMode] = useAtom(colorModeAtom);
+  // checks whether the user is online , so that syncing can occur
   const [isOnline, setIsOnline] = useState<States>(
     navigator.onLine ? States.ONLINE : States.OFFLINE
   );
 
+  // sends a notification whenever the app comes online
   window.ononline = (e) => {
     setIsOnline(States.ONLINE);
     new Notification("Back Online 👍👍");
   };
 
+  // sends a notification whenever the app goes offline
   window.onoffline = (e) => {
     setIsOnline(States.OFFLINE);
     new Notification("Offline 😔");
   };
 
+  // parsing the users input and turning it to markdown
+  // !IMPORTANT move this function into some form of utility functions
+  // !folder
   const marked = (text: string) => {
+    // TODO implement some sort of markdown parsing
     console.log(text);
   };
 
+  // reads in the users settings from the settings.json file and sets the application
+  // color mode and background colors approprietly
+  useEffect(() => {
+    window.electronAPI?.readSettings().then((res: Settings) => {
+      if (res != undefined) {
+        setColorMode(res?.colorMode);
+        setColors([res.blurColor1.toString(), res.blurColor2.toString()]);
+      }
+    });
+  }, [colorMode, setColorMode, colors, setColors]);
+
+  // reads in the users pages from the backend
+  useEffect(() => {
+    window.electronAPI?.readPages().then((res: any) => {
+      console.log(res);
+    });
+  }, [pages, setPages]);
+
+  // ALL UI CODE FOR THE HOMEPAGE EXISTS HERE
   return (
     <Background>
-      <div
-        style={{
-          backgroundColor: `${colors[0]}`,
-          height: "500px",
-          borderRadius: "50%",
-          position: "absolute",
-          zIndex: 0,
-          aspectRatio: 1,
-        }}
-      ></div>
-      <div
-        style={{
-          backgroundColor: `${colors[1]}`,
-          height: "500px",
-          borderRadius: "50%",
-          position: "absolute",
-          left: "70%",
-          top: "40%",
-          zIndex: 0,
-          aspectRatio: 1,
-        }}
-      ></div>
+      <CircleBox backgroundColor={colors[0]} />
+      <CircleBox
+        backgroundColor={colors[1]}
+        style={{ left: "80%", top: "60%" }}
+      />
       <FlexContainer
-        background={colorMode === "light" ? "#ffffff0" : "#1b1b1b58"}
+        background={colorMode === "light" ? "#ffffff0" : "#00000031"}
       >
         <Sidebar>
+          {/* the navigation bar at the top of every page. this is a custom navigation bar hence */}
+          {/* so I'm handling a lot of functionality on my own FML */}
           <SideNav
             onDrag={(e) => {
               window.moveTo(e.nativeEvent.clientX, e.nativeEvent.clientY);
@@ -124,6 +141,9 @@ function App() {
               <MenuButton
                 title="Scale"
                 onClick={() => {
+                  // check if the window is reduced. if it isn't ?
+                  // reduce the size by a factor of 150 (-150 from total window size) on both axis
+                  // otherwise , increase by 150 (+150 from to total window size)
                   isReduced === false
                     ? (window.resizeBy(-150, -150), setIsReduced(true))
                     : (window.resizeBy(150, 150), setIsReduced(false));
@@ -132,7 +152,11 @@ function App() {
               ></MenuButton>
               <MenuButton
                 title="Maximize"
-                onClick={() => {}}
+                onClick={
+                  // still don't know what the maximize functionality
+                  //will look like
+                  () => {}
+                }
                 color="#293f66"
               ></MenuButton>
             </div>
@@ -177,7 +201,16 @@ function App() {
                     color={colorMode === "light" ? "#000000" : "#ffffff"}
                   />
                 </ActionButton>
-                <ActionButton title="Sync">
+                <ActionButton
+                  title="Sync"
+                  onClick={() => {
+                    if (isOnline === States.ONLINE) {
+                      alert("Starting Sync...");
+                    } else {
+                      alert("Please Go Online To Sync...");
+                    }
+                  }}
+                >
                   <HiRefresh
                     size={20}
                     color={colorMode === "light" ? "#000000" : "#ffffff"}
@@ -226,6 +259,7 @@ function App() {
                     alignContent: "center",
                     alignItems: "center",
                     borderRadius: "5px",
+                    cursor: "pointer",
                   }}
                 >
                   <HiOutlineDotsVertical
@@ -238,19 +272,19 @@ function App() {
           </Box>
           <NavContent>
             <h2>Pages</h2>
-            {notes.length > 0 ? (
-              notes.map((note) => {
+            {pages.length > 0 ? (
+              pages.map((page) => {
                 return (
                   <Note
-                    key={note.id}
+                    key={page.id}
                     onClick={() => {
                       setNoteAtom(note);
                     }}
                   >
                     <NoteLeft>
-                      <Title>{note.title}</Title>
+                      <Title>{page.title}</Title>
                       <Subtitle style={{ color: "#ECECECEC" }}>
-                        {note.content.slice(0, 13) + "..."}
+                        {page.content.slice(0, 13) + "..."}
                       </Subtitle>
                     </NoteLeft>
                     <NoteRight></NoteRight>
@@ -284,6 +318,7 @@ function App() {
 
             <BodyRight>
               <TitleButton
+                title="tags"
                 onClick={() => {
                   setTagViewVisible(!tagViewVisible);
                 }}

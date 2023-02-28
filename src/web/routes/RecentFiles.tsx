@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { colorModeAtom, colorsAtom, recentDocumentsAtom } from "../atoms";
 import {
   Background,
+  CircleBox,
   FlexContainer,
   Heading,
   MenuButton,
@@ -18,32 +19,13 @@ export default function RecentFiles() {
 
   const [recentDocuments] = useAtom(recentDocumentsAtom);
 
-  console.log(recentDocuments);
-
   return (
     <Background>
-      <div
-        style={{
-          backgroundColor: `${colors[0]}`,
-          height: "500px",
-          borderRadius: "50%",
-          position: "absolute",
-          zIndex: 0,
-          aspectRatio: 1,
-        }}
-      ></div>
-      <div
-        style={{
-          backgroundColor: `${colors[1]}`,
-          height: "500px",
-          borderRadius: "50%",
-          position: "absolute",
-          left: "70%",
-          top: "40%",
-          zIndex: 0,
-          aspectRatio: 1,
-        }}
-      ></div>
+      <CircleBox backgroundColor={colors[0]} />
+      <CircleBox
+        backgroundColor={colors[1]}
+        style={{ left: "80%", top: "60%" }}
+      />
       <FlexContainer
         background={colorMode === "light" ? "#ffffff0" : "#1b1b1b58"}
       >
@@ -99,6 +81,7 @@ export default function RecentFiles() {
           >
             <Link
               to="/"
+              title="Go back"
               style={{
                 borderRadius: "2px",
                 padding: "10px",

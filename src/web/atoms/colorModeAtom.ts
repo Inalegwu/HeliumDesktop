@@ -1,3 +1,3 @@
 import { atom } from "jotai";
 
-export let colorModeAtom = atom("light");
+export let colorModeAtom = atom<string | undefined>("light");

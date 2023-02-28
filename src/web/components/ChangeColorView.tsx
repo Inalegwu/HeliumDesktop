@@ -130,7 +130,7 @@ export default function ChangeColorView() {
             borderRadius: "5px",
             color: "#000000",
             fontWeight: "bold",
-            cursor: "pointer",
+            cursor: `pointer`,
           }}
         >
           Save Changes

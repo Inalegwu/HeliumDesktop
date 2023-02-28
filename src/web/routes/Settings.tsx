@@ -6,15 +6,18 @@ import { actionAtom, colorModeAtom, colorsAtom } from "../atoms";
 import ChangeColorView from "../components/ChangeColorView";
 import EditSyncView from "../components/EditSyncView";
 import Sidebar from "../components/Sidebar";
-import { Background } from "../components/styled/Background";
-import { Body } from "../components/styled/Body";
-import { Box } from "../components/styled/Box";
-import { ColorPicker } from "../components/styled/ColorPicker";
-import { FlexContainer } from "../components/styled/FlexContainer";
-import { MenuButton } from "../components/styled/MenuButton";
-import { NavContent } from "../components/styled/NavContent";
-import { SettingsItem } from "../components/styled/SettingsItem";
-import { SideNav } from "../components/styled/SideNav";
+import {
+  AccountInfo,
+  Avatar,
+  Background,
+  Body,
+  CircleBox,
+  FlexContainer,
+  MenuButton,
+  NavContent,
+  SettingsItem,
+  SideNav,
+} from "../components/styled";
 import { Action } from "../utils/types";
 
 const actions = [
@@ -42,33 +45,16 @@ export default function Settings() {
     };
 
     const savedSettings = JSON.stringify(settings);
-    window.electronAPI.saveSettings(savedSettings);
+    window.electronAPI?.saveSettings(savedSettings);
   };
 
   return (
     <Background>
-      <div
-        style={{
-          backgroundColor: `${colors[0]}`,
-          height: "500px",
-          borderRadius: "50%",
-          position: "absolute",
-          zIndex: 0,
-          aspectRatio: 1,
-        }}
-      ></div>
-      <div
-        style={{
-          backgroundColor: `${colors[1]}`,
-          height: "500px",
-          borderRadius: "50%",
-          position: "absolute",
-          left: "70%",
-          top: "40%",
-          zIndex: 0,
-          aspectRatio: 1,
-        }}
-      ></div>
+      <CircleBox backgroundColor={colors[0]} />
+      <CircleBox
+        backgroundColor={colors[1]}
+        style={{ left: "80%", top: "60%" }}
+      />
       <FlexContainer
         background={colorMode === "light" ? "#ffffff0" : "#1b1b1b58"}
       >
@@ -122,9 +108,28 @@ export default function Settings() {
               </Link>
             </div>
           </SideNav>
-          <Box>
-            <h1>Account Info</h1>
-          </Box>
+          <div
+            style={{
+              width: "100%",
+              height: "16vh",
+              display: "flex",
+              alignContent: "center",
+              alignItems: "center",
+              padding: "10px",
+            }}
+          >
+            <Avatar />
+            <AccountInfo>
+              <h2 style={{ color: "#9e9e9e" }}>Guest Guestingson</h2>
+              <p style={{ color: "#9e9e9e" }}>
+                You Are Currently Using a Guest Account (
+                <i style={{ fontSize: "10px" }}>
+                  don't worry , that doesn't mean anything
+                </i>
+                )
+              </p>
+            </AccountInfo>
+          </div>
           <NavContent>
             {actions.map((action, index) => {
               return (

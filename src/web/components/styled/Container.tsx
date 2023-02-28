@@ -11,6 +11,7 @@ export const Container = styled.div`
   /* background: linear-gradient(-60deg, #ececec32, #ececec24); */
   background: ${(props: ContainerProps) =>
     props.background ? props.background : "#FFFFFF"};
+  backdrop-filter: blur(200px);
   flex-direction: column;
   color: ${(props: ContainerProps) =>
     props.textColor ? props.textColor : "#00000"};

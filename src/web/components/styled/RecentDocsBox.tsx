@@ -11,5 +11,5 @@ export const RecentDocsBox = styled.div`
   margin: auto;
   height: 80vh;
   border-radius: 10px;
-  backdrop-filter: blur(500px);
+  backdrop-filter: blur(200px);
 `;

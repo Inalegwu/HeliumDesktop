@@ -1,4 +1,4 @@
 import { atom } from "jotai";
 import { NoteType } from "../utils/types";
 
-export let noteAtom = atom<NoteType>({ title: undefined, content: undefined });
+export let noteAtom = atom<NoteType>({});

@@ -6,5 +6,4 @@ export const Box = styled.div`
   display: flex;
   flex-direction: column;
   height: 16vh;
-  justify-content: space-around;
 `;

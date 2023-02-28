@@ -30,3 +30,6 @@ export * from "./typography/Heading";
 export * from "./typography/Subtitle";
 export * from "./typography/Title";
 export * from "./RecentDocsBox";
+export * from "./CircleBox";
+export * from "./Avatar";
+export * from "./AccountInfo";

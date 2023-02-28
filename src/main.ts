@@ -1,51 +1,35 @@
 import path from "path";
-import {
-  BrowserWindow,
-  dialog,
-  ipcMain,
-  Menu,
-  MenuItem,
-  app,
-  screen,
-} from "electron";
-import fs from "fs";
-import process from "process";
-import { atom } from "jotai";
+import { BrowserWindow, ipcMain, app, screen } from "electron";
+import PageFunctions from "./actions/pages.functions";
+import AppFunctions from "./actions/app.functions";
 
-export interface Settings {
-  blurColor1: string;
-  blurColor2: string;
-  colorMode: string;
-}
-
+// the exposes the electronAPI to the window object so it can
+// be accessible in the renderer process
+// TODO define functions relating to the electronAPI , so that they can
+// TODO be acessible with documentation (parameters and all) in the renderer
+// TODO process => UPDATE (done)
 declare global {
   interface Window {
-    electronAPI?: any;
+    electronAPI?: {
+      saveSettings: (settings: any) => void;
+      readSettings: () => Promise<any>;
+      readPages: () => Promise<any>;
+      savePage: (page: any) => void;
+      syncPages: (pages: Array<any>) => void;
+      savePagesToDisk: (pages: Array<any>) => void;
+      uploadFileToPages: (file: any) => void;
+      addToRecentPages: (page: any) => void;
+    };
   }
 }
 
-function handleSaveSettings(event: any, settings: any) {
-  let fullPath;
+const pageFuncs = new PageFunctions();
+const appFuncs = new AppFunctions();
 
-  fs.writeFile(
-    path.join(app.getPath("appData"), "helium/settings.json"),
-    settings,
-    (err) => {
-      if (err) throw err;
-    }
-  );
-}
-
-function readSavedSettings(event: any) {
-  const getPath = path.join(app.getPath("appData"), "helium/settings.json");
-  const content = fs.readFileSync(getPath, "utf-8");
-
-  const parsed = JSON.parse(content);
-}
-
+// details that relate to the final rendered window
+// do not change under any circumstances unless it's
+// to show the dev tools or because of errors in the code
 function createWindow() {
-  const primaryDisplay = screen.getPrimaryDisplay();
-  const { width, height } = primaryDisplay.workAreaSize;
   const mainWindow = new BrowserWindow({
     resizable: true,
     frame: false,
@@ -63,9 +47,17 @@ function createWindow() {
   // mainWindow.webContents.openDevTools({ mode: "right" });
 }
 
+// everthing that happens between clicking the icon and the page
+// fully loading...
 app.whenReady().then(() => {
-  ipcMain.on("save-settings", handleSaveSettings);
-  ipcMain.on("read-settings", readSavedSettings);
+  // handlers and listeners
+  ipcMain.on("save-settings", appFuncs.handleSaveSettings);
+  ipcMain.handle("read-settings", appFuncs.readSavedSettings);
+  ipcMain.handle("read-pages", pageFuncs.readPages);
+  ipcMain.handle("sync-pages", pageFuncs.syncPages);
+  ipcMain.handle("add-to-recent-pages", pageFuncs.addToRecentPages);
+  ipcMain.on("save-pages-to-disk", pageFuncs.savePagesToDisk);
+  // spawns the main window
   createWindow();
 });
 
