@@ -42,7 +42,6 @@ import {
   ActionNav,
   CircleBox,
 } from "./components/styled/index";
-
 import "./App.css";
 
 function App() {
@@ -105,32 +104,289 @@ function App() {
     });
   }, [pages, setPages]);
 
-  // ALL UI CODE FOR THE HOMEPAGE EXISTS HERE
+  // // ALL UI CODE FOR THE HOMEPAGE EXISTS HERE
+  // return (
+  //   <Background>
+  //     <CircleBox backgroundColor={colors[0]} />
+  //     <CircleBox
+  //       backgroundColor={colors[1]}
+  //       style={{ left: "80%", top: "60%" }}
+  //     />
+  //     <FlexContainer
+  //       background={colorMode === "light" ? "#ffffff0" : "#00000031"}
+  //     >
+  //       <Sidebar>
+  //         {/* the navigation bar at the top of every page. this is a custom navigation bar hence */}
+  //         {/* so I'm handling a lot of functionality on my own FML */}
+  //         <SideNav
+  //           onDrag={(e) => {
+  //             window.moveTo(e.nativeEvent.clientX, e.nativeEvent.clientY);
+  //           }}
+  //         >
+  //           <div
+  //             style={{
+  //               width: "90%",
+  //               height: "100%",
+  //               padding: "1px",
+  //             }}
+  //           >
+  //             <MenuButton
+  //               title="Quit"
+  //               onClick={() => {
+  //                 window.close();
+  //               }}
+  //               color="#d63d45"
+  //             ></MenuButton>
+  //             <MenuButton
+  //               title="Scale"
+  //               onClick={() => {
+  //                 // check if the window is reduced. if it isn't ?
+  //                 // reduce the size by a factor of 150 (-150 from total window size) on both axis
+  //                 // otherwise , increase by 150 (+150 from to total window size)
+  //                 isReduced === false
+  //                   ? (window.resizeBy(-150, -150), setIsReduced(true))
+  //                   : (window.resizeBy(150, 150), setIsReduced(false));
+  //               }}
+  //               color="#e6a862"
+  //             ></MenuButton>
+  //             <MenuButton
+  //               title="Maximize"
+  //               onClick={
+  //                 // still don't know what the maximize functionality
+  //                 //will look like
+  //                 () => {}
+  //               }
+  //               color="#293f66"
+  //             ></MenuButton>
+  //           </div>
+  //           <div>
+  //             <Link
+  //               to="/settings"
+  //               style={{
+  //                 padding: "5px",
+  //                 borderRadius: "2px",
+  //               }}
+  //             >
+  //               <HiCog
+  //                 color={colorMode === "light" ? "black" : "white"}
+  //                 size={16}
+  //               />
+  //             </Link>
+  //           </div>
+  //         </SideNav>
+  //         <Box>
+  //           <Input
+  //             placeholderColor={colorMode === "light" ? "#000000" : "#ffffff"}
+  //             type="text"
+  //             placeholder="Search..."
+  //           />
+  //           <Flex>
+  //             <div
+  //               style={{
+  //                 width: "70%",
+  //                 display: "flex",
+  //                 justifyContent: "flex-start",
+  //               }}
+  //             >
+  //               <ActionButton title="Import">
+  //                 <HiDownload
+  //                   size={20}
+  //                   color={colorMode === "light" ? "#000000" : "#ffffff"}
+  //                 />
+  //               </ActionButton>
+  //               <ActionButton title="New File">
+  //                 <HiDocumentAdd
+  //                   size={20}
+  //                   color={colorMode === "light" ? "#000000" : "#ffffff"}
+  //                 />
+  //               </ActionButton>
+  //               <ActionButton
+  //                 title="Sync"
+  //                 onClick={() => {
+  //                   if (isOnline === States.ONLINE) {
+  //                     alert("Starting Sync...");
+  //                   } else {
+  //                     alert("Please Go Online To Sync...");
+  //                   }
+  //                 }}
+  //               >
+  //                 <HiRefresh
+  //                   size={20}
+  //                   color={colorMode === "light" ? "#000000" : "#ffffff"}
+  //                 />
+  //               </ActionButton>
+  //             </div>
+  //             <div
+  //               style={{
+  //                 display: "flex",
+  //                 width: "30%",
+  //                 justifyContent: "flex-end",
+  //                 alignContent: "center",
+  //                 alignItems: "center",
+  //               }}
+  //             >
+  //               <button
+  //                 title="Save To Device"
+  //                 style={{
+  //                   border: "none",
+  //                   background: "#ececec40",
+  //                   width: "80%",
+  //                   height: "40px",
+  //                   display: "flex",
+  //                   justifyContent: "center",
+  //                   alignContent: "center",
+  //                   alignItems: "center",
+  //                   borderRadius: "5px",
+  //                   marginRight: "5px",
+  //                 }}
+  //               >
+  //                 <HiCloudDownload
+  //                   size={20}
+  //                   color={colorMode === "light" ? "#000000" : "#ffffff"}
+  //                 />
+  //               </button>
+  //               <Link
+  //                 to="/recent_files"
+  //                 title="Recent Files"
+  //                 style={{
+  //                   border: "none",
+  //                   background: "#ececec40",
+  //                   width: "30%",
+  //                   height: "40px",
+  //                   display: "flex",
+  //                   justifyContent: "center",
+  //                   alignContent: "center",
+  //                   alignItems: "center",
+  //                   borderRadius: "5px",
+  //                   cursor: "pointer",
+  //                 }}
+  //               >
+  //                 <HiOutlineDotsVertical
+  //                   size={20}
+  //                   color={colorMode === "light" ? "#000000" : "#ffffff"}
+  //                 />
+  //               </Link>
+  //             </div>
+  //           </Flex>
+  //         </Box>
+  //         <NavContent>
+  //           <h2>Pages</h2>
+  //           {pages.length > 0 ? (
+  //             pages.map((page) => {
+  //               return (
+  //                 <Note
+  //                   key={page.id}
+  //                   onClick={() => {
+  //                     setNoteAtom(note);
+  //                   }}
+  //                 >
+  //                   <NoteLeft>
+  //                     <Title>{page.title}</Title>
+  //                     <Subtitle style={{ color: "#ECECECEC" }}>
+  //                       {page.content.slice(0, 13) + "..."}
+  //                     </Subtitle>
+  //                   </NoteLeft>
+  //                   <NoteRight></NoteRight>
+  //                 </Note>
+  //               );
+  //             })
+  //           ) : (
+  //             <p style={{ marginTop: "10px", color: "#d4d4d4" }}>
+  //               Oops , No Pages
+  //             </p>
+  //           )}
+  //         </NavContent>
+  //         <State>
+  //           {isOnline === States.ONLINE ? (
+  //             <p style={{ fontSize: 13 }}>Online</p>
+  //           ) : (
+  //             <p style={{ fontSize: 13 }}>Offline</p>
+  //           )}
+  //           <Indicator
+  //             color={isOnline === States.ONLINE ? "#3b8052" : "#d63d45"}
+  //           />
+  //         </State>
+  //       </Sidebar>
+  //       <Body>
+  //         <BodyNav>
+  //           <BodyTitle
+  //             type="text"
+  //             placeholder={note.title === undefined ? "Title..." : note.title}
+  //             color={colorMode === "light" ? "#000000" : "#ffffff"}
+  //           />
+
+  //           <BodyRight>
+  //             <TitleButton
+  //               title="tags"
+  //               onClick={() => {
+  //                 setTagViewVisible(!tagViewVisible);
+  //               }}
+  //             >
+  //               <HiHashtag
+  //                 color={colorMode === "light" ? "#000000" : "#ffffff"}
+  //                 size={16}
+  //               />
+  //             </TitleButton>
+  //             <TitleButton title="Save">
+  //               <HiSave
+  //                 color={colorMode === "light" ? "#000000" : "#ffffff"}
+  //                 size={16}
+  //               />
+  //             </TitleButton>
+  //             <TitleButton title="Export">
+  //               <HiArrowUp
+  //                 color={colorMode === "light" ? "#000000" : "#ffffff"}
+  //                 size={16}
+  //               />
+  //             </TitleButton>
+  //           </BodyRight>
+  //         </BodyNav>
+  //         <ActionNav>
+  //           <TitleButton
+  //             onClick={() => {
+  //               SetBold(!bold);
+  //             }}
+  //           ></TitleButton>
+  //           <TagBox
+  //             type="text"
+  //             onChange={(e) => {
+  //               setTag(e.target.value);
+  //             }}
+  //             placeholder="Tag"
+  //           />
+  //         </ActionNav>
+  //         <Editor
+  //           placeholder="Start Typing..."
+  //           color={colorMode === "light" ? "#0000000" : "#ffffff"}
+  //           placeholderColor={colorMode === "light" ? "#3d3d3d76" : "#ffffff"}
+  //           onChange={(e) => {
+  //             marked(e.target.value);
+  //           }}
+  //           style={{ fontWeight: bold === true ? "bold" : "normal" }}
+  //           defaultValue={note.content === undefined ? "" : note.content}
+  //         />
+  //       </Body>
+  //     </FlexContainer>
+  //   </Background>
+  // );
   return (
-    <Background>
-      <CircleBox backgroundColor={colors[0]} />
-      <CircleBox
-        backgroundColor={colors[1]}
-        style={{ left: "80%", top: "60%" }}
-      />
-      <FlexContainer
-        background={colorMode === "light" ? "#ffffff0" : "#00000031"}
-      >
-        <Sidebar>
-          {/* the navigation bar at the top of every page. this is a custom navigation bar hence */}
-          {/* so I'm handling a lot of functionality on my own FML */}
+    <div className="w:full h:full">
+      <div
+        className={`w:70vh h:70vh border-radius:50% bg:${colors[0]} position:absolute z:0`}
+      ></div>
+      <div
+        className={`w:70vh h:70vh border-radius:50% bg:${colors[1]} left:80% top:50% position:absolute z:0`}
+      ></div>
+      {/* actual body of app */}
+      <div className="position:absolute z:100 w:full h:full bg bd:blur(200px) display:flex">
+        <div className="w:25% bg:white display:flex flex-direction:col">
+          {/* app navigation */}
           <SideNav
             onDrag={(e) => {
               window.moveTo(e.nativeEvent.clientX, e.nativeEvent.clientY);
             }}
           >
-            <div
-              style={{
-                width: "90%",
-                height: "100%",
-                padding: "1px",
-              }}
-            >
+            <div className="width:90% height:100% padding:1px">
               <MenuButton
                 title="Quit"
                 onClick={() => {
@@ -175,200 +431,29 @@ function App() {
               </Link>
             </div>
           </SideNav>
-          <Box>
-            <Input
-              placeholderColor={colorMode === "light" ? "#000000" : "#ffffff"}
-              type="text"
-              placeholder="Search..."
-            />
-            <Flex>
-              <div
-                style={{
-                  width: "70%",
-                  display: "flex",
-                  justifyContent: "flex-start",
-                }}
-              >
-                <ActionButton title="Import">
-                  <HiDownload
-                    size={20}
-                    color={colorMode === "light" ? "#000000" : "#ffffff"}
-                  />
-                </ActionButton>
-                <ActionButton title="New File">
-                  <HiDocumentAdd
-                    size={20}
-                    color={colorMode === "light" ? "#000000" : "#ffffff"}
-                  />
-                </ActionButton>
-                <ActionButton
-                  title="Sync"
-                  onClick={() => {
-                    if (isOnline === States.ONLINE) {
-                      alert("Starting Sync...");
-                    } else {
-                      alert("Please Go Online To Sync...");
-                    }
-                  }}
-                >
-                  <HiRefresh
-                    size={20}
-                    color={colorMode === "light" ? "#000000" : "#ffffff"}
-                  />
-                </ActionButton>
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  width: "30%",
-                  justifyContent: "flex-end",
-                  alignContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <button
-                  title="Save To Device"
-                  style={{
-                    border: "none",
-                    background: "#ececec40",
-                    width: "80%",
-                    height: "40px",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignContent: "center",
-                    alignItems: "center",
-                    borderRadius: "5px",
-                    marginRight: "5px",
-                  }}
-                >
-                  <HiCloudDownload
-                    size={20}
-                    color={colorMode === "light" ? "#000000" : "#ffffff"}
-                  />
-                </button>
-                <Link
-                  to="/recent_files"
-                  title="Recent Files"
-                  style={{
-                    border: "none",
-                    background: "#ececec40",
-                    width: "30%",
-                    height: "40px",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignContent: "center",
-                    alignItems: "center",
-                    borderRadius: "5px",
-                    cursor: "pointer",
-                  }}
-                >
-                  <HiOutlineDotsVertical
-                    size={20}
-                    color={colorMode === "light" ? "#000000" : "#ffffff"}
-                  />
-                </Link>
-              </div>
-            </Flex>
-          </Box>
-          <NavContent>
-            <h2>Pages</h2>
+          <div className="height:92vh width:full display:flex flex-direction:col padding:10px">
             {pages.length > 0 ? (
               pages.map((page) => {
-                return (
-                  <Note
-                    key={page.id}
-                    onClick={() => {
-                      setNoteAtom(note);
-                    }}
-                  >
-                    <NoteLeft>
-                      <Title>{page.title}</Title>
-                      <Subtitle style={{ color: "#ECECECEC" }}>
-                        {page.content.slice(0, 13) + "..."}
-                      </Subtitle>
-                    </NoteLeft>
-                    <NoteRight></NoteRight>
-                  </Note>
-                );
+                return <div className="bg:gray w:80% margin:auto"></div>;
               })
             ) : (
-              <p style={{ marginTop: "10px", color: "#d4d4d4" }}>
-                Oops , No Pages
-              </p>
+              <>
+                <h2>No Pages</h2>
+                <p className="font:20 font:bold italic color:gray">
+                  Create One
+                </p>
+              </>
             )}
-          </NavContent>
-          <State>
-            {isOnline === States.ONLINE ? (
-              <p style={{ fontSize: 13 }}>Online</p>
-            ) : (
-              <p style={{ fontSize: 13 }}>Offline</p>
-            )}
-            <Indicator
-              color={isOnline === States.ONLINE ? "#3b8052" : "#d63d45"}
-            />
-          </State>
-        </Sidebar>
-        <Body>
-          <BodyNav>
-            <BodyTitle
-              type="text"
-              placeholder={note.title === undefined ? "Title..." : note.title}
-              color={colorMode === "light" ? "#000000" : "#ffffff"}
-            />
-
-            <BodyRight>
-              <TitleButton
-                title="tags"
-                onClick={() => {
-                  setTagViewVisible(!tagViewVisible);
-                }}
-              >
-                <HiHashtag
-                  color={colorMode === "light" ? "#000000" : "#ffffff"}
-                  size={16}
-                />
-              </TitleButton>
-              <TitleButton title="Save">
-                <HiSave
-                  color={colorMode === "light" ? "#000000" : "#ffffff"}
-                  size={16}
-                />
-              </TitleButton>
-              <TitleButton title="Export">
-                <HiArrowUp
-                  color={colorMode === "light" ? "#000000" : "#ffffff"}
-                  size={16}
-                />
-              </TitleButton>
-            </BodyRight>
-          </BodyNav>
-          <ActionNav>
-            <TitleButton
-              onClick={() => {
-                SetBold(!bold);
-              }}
-            ></TitleButton>
-            <TagBox
-              type="text"
-              onChange={(e) => {
-                setTag(e.target.value);
-              }}
-              placeholder="Tag"
-            />
-          </ActionNav>
-          <Editor
-            placeholder="Start Typing..."
-            color={colorMode === "light" ? "#0000000" : "#ffffff"}
-            placeholderColor={colorMode === "light" ? "#3d3d3d76" : "#ffffff"}
-            onChange={(e) => {
-              marked(e.target.value);
-            }}
-            style={{ fontWeight: bold === true ? "bold" : "normal" }}
-            defaultValue={note.content === undefined ? "" : note.content}
-          />
-        </Body>
-      </FlexContainer>
-    </Background>
+          </div>
+          <div className="height:4vh padding:5px display:flex justify-content:space-between align-items:center align-content:center width:full">
+            <h6>{isOnline === States.ONLINE ? "Online" : "Offline"}</h6>
+            <Indicator color={isOnline === States.ONLINE ? "green" : "red"} />
+          </div>
+        </div>
+        <div className="w:25%"></div>
+        <div className="w:50% bg:beryl h:full"></div>
+      </div>
+    </div>
   );
 }
 

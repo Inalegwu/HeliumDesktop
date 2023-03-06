@@ -10,7 +10,7 @@ import AppFunctions from "./actions/app.functions";
 // TODO process => UPDATE (done)
 declare global {
   interface Window {
-    electronAPI?: {
+    electronAPI: {
       saveSettings: (settings: any) => void;
       readSettings: () => Promise<any>;
       readPages: () => Promise<any>;

@@ -25,6 +25,8 @@
     ]
   },
   "dependencies": {
+    "@master/css": "^1.37.8",
+    "antd": "^5.3.0",
     "electron-storage": "^1.0.7",
     "fs": "0.0.1-security",
     "jotai": "^2.0.2",
