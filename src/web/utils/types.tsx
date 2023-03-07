@@ -8,8 +8,8 @@ export enum States {
 
 export interface NoteType {
   id: number;
-  title: string;
-  content: string;
+  file_content: string;
+  file_name: string;
 }
 
 // what a page looks like

@@ -2,6 +2,8 @@
 // and reading of pages from the backend and handing them
 // over to the renderer process in preload.js
 
+import axios from "axios";
+
 // !IMPORTANT => I'm not always a fan of object oriented programming
 // !IMPORTANT => but it just seemed to make sense here just for structure
 export default class PageFunctions {
@@ -22,5 +24,20 @@ export default class PageFunctions {
   }
   addToRecentPages(event: any, page: any) {
     console.log("Adding page to recent pages");
+  }
+  async createPage(event: any, page: any) {
+    const response = await axios.post(
+      "http://localhost:3000/file/create_file/",
+      page
+    );
+
+    console.log(response.data);
+  }
+  async readPagesByDocumentId(event: any, id: any) {
+    const response = await axios.get(
+      `http://localhost:3000/file/get_file_by_document_id/${id}`
+    );
+
+    return response.data.files;
   }
 }

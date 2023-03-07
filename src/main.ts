@@ -2,6 +2,7 @@ import path from "path";
 import { BrowserWindow, ipcMain, app, screen } from "electron";
 import PageFunctions from "./actions/pages.functions";
 import AppFunctions from "./actions/app.functions";
+import DocumentFunctions from "./actions/document.functions";
 
 // the exposes the electronAPI to the window object so it can
 // be accessible in the renderer process
@@ -19,12 +20,17 @@ declare global {
       savePagesToDisk: (pages: Array<any>) => void;
       uploadFileToPages: (file: any) => void;
       addToRecentPages: (page: any) => void;
+      readDocuments: () => Promise<any>;
+      createDocument: (document: any) => void;
+      readPagesByDocumentId: (id: any) => Promise<any>;
+      createPage: (page: any) => void;
     };
   }
 }
 
 const pageFuncs = new PageFunctions();
 const appFuncs = new AppFunctions();
+const docFuncs = new DocumentFunctions();
 
 // details that relate to the final rendered window
 // do not change under any circumstances unless it's
@@ -57,6 +63,10 @@ app.whenReady().then(() => {
   ipcMain.handle("sync-pages", pageFuncs.syncPages);
   ipcMain.handle("add-to-recent-pages", pageFuncs.addToRecentPages);
   ipcMain.on("save-pages-to-disk", pageFuncs.savePagesToDisk);
+  ipcMain.handle("read-documents", docFuncs.readDocuments);
+  ipcMain.on("create-document", docFuncs.createDocument);
+  ipcMain.handle("read-pages-by-doc-id", pageFuncs.readPagesByDocumentId);
+  ipcMain.on("create-page", pageFuncs.createPage);
   // spawns the main window
   createWindow();
 });

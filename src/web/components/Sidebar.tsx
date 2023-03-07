@@ -22,7 +22,7 @@ import { CiImport, CiFileOn, CiRepeat, CiSettings } from "react-icons/ci";
 import { electron } from "process";
 import { BrowserWindow } from "electron/main";
 import { useAtom } from "jotai";
-import { colorModeAtom, noteAtom } from "../atoms";
+import { colorModeAtom } from "../atoms";
 import { Link } from "react-router-dom";
 
 interface SideBarProps {

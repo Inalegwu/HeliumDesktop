@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 export interface EditorProps {
-  placeholderColor: string;
+  placeholderColor?: string;
 }
 
 export const Editor = styled.textarea`

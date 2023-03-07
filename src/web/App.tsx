@@ -1,58 +1,26 @@
-import React, { useEffect, useState } from "react";
-import {
-  HiArrowUp,
-  HiCloudDownload,
-  HiCog,
-  HiDocumentAdd,
-  HiDownload,
-  HiHashtag,
-  HiOutlineDotsVertical,
-  HiRefresh,
-  HiSave,
-} from "react-icons/hi";
-import Sidebar from "./components/Sidebar";
+import React from "react";
+import { HiCog, HiHashtag, HiMinus, HiPlus } from "react-icons/hi";
 import { NoteType, Settings, States } from "./utils/types";
 import { useAtom } from "jotai";
-import { colorModeAtom, colorsAtom, noteAtom } from "./atoms";
-import { Link } from "react-router-dom";
 import {
-  Indicator,
-  State,
-  NoteRight,
-  Subtitle,
-  Title,
-  NoteLeft,
-  Note,
-  NavContent,
-  ActionButton,
-  Flex,
-  Input,
-  Box,
-  SideNav,
-  MenuButton,
-  TagBox,
-  TitleButton,
-  FlexContainer,
-  Editor,
-  BodyTitle,
-  BodyRight,
-  BodyNav,
-  Body,
-  Background,
-  ActionNav,
-  CircleBox,
-} from "./components/styled/index";
+  activeDocumentAtom,
+  activePageAtom,
+  colorModeAtom,
+  colorsAtom,
+} from "./atoms";
+import { Link } from "react-router-dom";
 import "./App.css";
+import { Editor, Indicator, MenuButton, SideNav } from "./components/styled";
+import CreateDocument from "./components/CreateDocument";
+import CreatePage from "./components/CreatePage";
+import DocumentItem from "./components/DocumentItem";
+import NoteItem from "./components/NoteItem";
 
 function App() {
-  const [bold, SetBold] = useState<boolean>(false);
-  const [tagViewVisible, setTagViewVisible] = useState<boolean>(false);
-  const [noteText, setNoteText] = useState<string>("");
-  const [tag, setTag] = useState<string>("");
-  const [pages, setPages] = useState<NoteType[]>([]);
+  const [pages, setPages] = React.useState<NoteType[]>([]);
   // for checking the state of the window size (aids with scaling)
-  const [isReduced, setIsReduced] = useState<boolean>(false);
-  const [note, setNoteAtom] = useAtom(noteAtom);
+  const [isReduced, setIsReduced] = React.useState<boolean>(false);
+  const [documents, setDocuments] = React.useState<Array<any>>([]);
 
   // handles the color of the background image splotches ( if the values from settings is undefined it
   // defaults to the application defined settings other wise it uses the users most recently saved values)
@@ -62,9 +30,22 @@ function App() {
   // color modes
   const [colorMode, setColorMode] = useAtom(colorModeAtom);
   // checks whether the user is online , so that syncing can occur
-  const [isOnline, setIsOnline] = useState<States>(
+  const [isOnline, setIsOnline] = React.useState<States>(
     navigator.onLine ? States.ONLINE : States.OFFLINE
   );
+
+  // states that relate to create a new document
+  const [createDocumentTitle, setCreateDocumentTitle] =
+    React.useState<string>("");
+  const [createDocumentDescription, setCreateDocumentDescription] =
+    React.useState<string>("");
+  const [createDocumentVisible, setCreateDocumentVisible] =
+    React.useState<boolean>(false);
+  const [createPageVisible, setCreatePageVisible] =
+    React.useState<boolean>(false);
+  const [createPageTitle, setCreatePageTitle] = React.useState<string>("");
+  const [activeDocument, setActiveDocument] = useAtom(activeDocumentAtom);
+  const [activePage, setActivePage] = useAtom(activePageAtom);
 
   // sends a notification whenever the app comes online
   window.ononline = (e) => {
@@ -78,17 +59,9 @@ function App() {
     new Notification("Offline 😔");
   };
 
-  // parsing the users input and turning it to markdown
-  // !IMPORTANT move this function into some form of utility functions
-  // !folder
-  const marked = (text: string) => {
-    // TODO implement some sort of markdown parsing
-    console.log(text);
-  };
-
   // reads in the users settings from the settings.json file and sets the application
   // color mode and background colors approprietly
-  useEffect(() => {
+  React.useMemo(() => {
     window.electronAPI?.readSettings().then((res: Settings) => {
       if (res != undefined) {
         setColorMode(res?.colorMode);
@@ -98,277 +71,38 @@ function App() {
   }, [colorMode, setColorMode, colors, setColors]);
 
   // reads in the users pages from the backend
-  useEffect(() => {
-    window.electronAPI?.readPages().then((res: any) => {
-      console.log(res);
+  React.useMemo(() => {
+    window.electronAPI.readDocuments().then((res) => {
+      setDocuments(res);
     });
   }, [pages, setPages]);
 
-  // // ALL UI CODE FOR THE HOMEPAGE EXISTS HERE
-  // return (
-  //   <Background>
-  //     <CircleBox backgroundColor={colors[0]} />
-  //     <CircleBox
-  //       backgroundColor={colors[1]}
-  //       style={{ left: "80%", top: "60%" }}
-  //     />
-  //     <FlexContainer
-  //       background={colorMode === "light" ? "#ffffff0" : "#00000031"}
-  //     >
-  //       <Sidebar>
-  //         {/* the navigation bar at the top of every page. this is a custom navigation bar hence */}
-  //         {/* so I'm handling a lot of functionality on my own FML */}
-  //         <SideNav
-  //           onDrag={(e) => {
-  //             window.moveTo(e.nativeEvent.clientX, e.nativeEvent.clientY);
-  //           }}
-  //         >
-  //           <div
-  //             style={{
-  //               width: "90%",
-  //               height: "100%",
-  //               padding: "1px",
-  //             }}
-  //           >
-  //             <MenuButton
-  //               title="Quit"
-  //               onClick={() => {
-  //                 window.close();
-  //               }}
-  //               color="#d63d45"
-  //             ></MenuButton>
-  //             <MenuButton
-  //               title="Scale"
-  //               onClick={() => {
-  //                 // check if the window is reduced. if it isn't ?
-  //                 // reduce the size by a factor of 150 (-150 from total window size) on both axis
-  //                 // otherwise , increase by 150 (+150 from to total window size)
-  //                 isReduced === false
-  //                   ? (window.resizeBy(-150, -150), setIsReduced(true))
-  //                   : (window.resizeBy(150, 150), setIsReduced(false));
-  //               }}
-  //               color="#e6a862"
-  //             ></MenuButton>
-  //             <MenuButton
-  //               title="Maximize"
-  //               onClick={
-  //                 // still don't know what the maximize functionality
-  //                 //will look like
-  //                 () => {}
-  //               }
-  //               color="#293f66"
-  //             ></MenuButton>
-  //           </div>
-  //           <div>
-  //             <Link
-  //               to="/settings"
-  //               style={{
-  //                 padding: "5px",
-  //                 borderRadius: "2px",
-  //               }}
-  //             >
-  //               <HiCog
-  //                 color={colorMode === "light" ? "black" : "white"}
-  //                 size={16}
-  //               />
-  //             </Link>
-  //           </div>
-  //         </SideNav>
-  //         <Box>
-  //           <Input
-  //             placeholderColor={colorMode === "light" ? "#000000" : "#ffffff"}
-  //             type="text"
-  //             placeholder="Search..."
-  //           />
-  //           <Flex>
-  //             <div
-  //               style={{
-  //                 width: "70%",
-  //                 display: "flex",
-  //                 justifyContent: "flex-start",
-  //               }}
-  //             >
-  //               <ActionButton title="Import">
-  //                 <HiDownload
-  //                   size={20}
-  //                   color={colorMode === "light" ? "#000000" : "#ffffff"}
-  //                 />
-  //               </ActionButton>
-  //               <ActionButton title="New File">
-  //                 <HiDocumentAdd
-  //                   size={20}
-  //                   color={colorMode === "light" ? "#000000" : "#ffffff"}
-  //                 />
-  //               </ActionButton>
-  //               <ActionButton
-  //                 title="Sync"
-  //                 onClick={() => {
-  //                   if (isOnline === States.ONLINE) {
-  //                     alert("Starting Sync...");
-  //                   } else {
-  //                     alert("Please Go Online To Sync...");
-  //                   }
-  //                 }}
-  //               >
-  //                 <HiRefresh
-  //                   size={20}
-  //                   color={colorMode === "light" ? "#000000" : "#ffffff"}
-  //                 />
-  //               </ActionButton>
-  //             </div>
-  //             <div
-  //               style={{
-  //                 display: "flex",
-  //                 width: "30%",
-  //                 justifyContent: "flex-end",
-  //                 alignContent: "center",
-  //                 alignItems: "center",
-  //               }}
-  //             >
-  //               <button
-  //                 title="Save To Device"
-  //                 style={{
-  //                   border: "none",
-  //                   background: "#ececec40",
-  //                   width: "80%",
-  //                   height: "40px",
-  //                   display: "flex",
-  //                   justifyContent: "center",
-  //                   alignContent: "center",
-  //                   alignItems: "center",
-  //                   borderRadius: "5px",
-  //                   marginRight: "5px",
-  //                 }}
-  //               >
-  //                 <HiCloudDownload
-  //                   size={20}
-  //                   color={colorMode === "light" ? "#000000" : "#ffffff"}
-  //                 />
-  //               </button>
-  //               <Link
-  //                 to="/recent_files"
-  //                 title="Recent Files"
-  //                 style={{
-  //                   border: "none",
-  //                   background: "#ececec40",
-  //                   width: "30%",
-  //                   height: "40px",
-  //                   display: "flex",
-  //                   justifyContent: "center",
-  //                   alignContent: "center",
-  //                   alignItems: "center",
-  //                   borderRadius: "5px",
-  //                   cursor: "pointer",
-  //                 }}
-  //               >
-  //                 <HiOutlineDotsVertical
-  //                   size={20}
-  //                   color={colorMode === "light" ? "#000000" : "#ffffff"}
-  //                 />
-  //               </Link>
-  //             </div>
-  //           </Flex>
-  //         </Box>
-  //         <NavContent>
-  //           <h2>Pages</h2>
-  //           {pages.length > 0 ? (
-  //             pages.map((page) => {
-  //               return (
-  //                 <Note
-  //                   key={page.id}
-  //                   onClick={() => {
-  //                     setNoteAtom(note);
-  //                   }}
-  //                 >
-  //                   <NoteLeft>
-  //                     <Title>{page.title}</Title>
-  //                     <Subtitle style={{ color: "#ECECECEC" }}>
-  //                       {page.content.slice(0, 13) + "..."}
-  //                     </Subtitle>
-  //                   </NoteLeft>
-  //                   <NoteRight></NoteRight>
-  //                 </Note>
-  //               );
-  //             })
-  //           ) : (
-  //             <p style={{ marginTop: "10px", color: "#d4d4d4" }}>
-  //               Oops , No Pages
-  //             </p>
-  //           )}
-  //         </NavContent>
-  //         <State>
-  //           {isOnline === States.ONLINE ? (
-  //             <p style={{ fontSize: 13 }}>Online</p>
-  //           ) : (
-  //             <p style={{ fontSize: 13 }}>Offline</p>
-  //           )}
-  //           <Indicator
-  //             color={isOnline === States.ONLINE ? "#3b8052" : "#d63d45"}
-  //           />
-  //         </State>
-  //       </Sidebar>
-  //       <Body>
-  //         <BodyNav>
-  //           <BodyTitle
-  //             type="text"
-  //             placeholder={note.title === undefined ? "Title..." : note.title}
-  //             color={colorMode === "light" ? "#000000" : "#ffffff"}
-  //           />
+  const findActiveDocPages = (id: any) => {
+    window.electronAPI
+      .readPagesByDocumentId(activeDocument.id)
+      .then((res) => {
+        setPages(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
-  //           <BodyRight>
-  //             <TitleButton
-  //               title="tags"
-  //               onClick={() => {
-  //                 setTagViewVisible(!tagViewVisible);
-  //               }}
-  //             >
-  //               <HiHashtag
-  //                 color={colorMode === "light" ? "#000000" : "#ffffff"}
-  //                 size={16}
-  //               />
-  //             </TitleButton>
-  //             <TitleButton title="Save">
-  //               <HiSave
-  //                 color={colorMode === "light" ? "#000000" : "#ffffff"}
-  //                 size={16}
-  //               />
-  //             </TitleButton>
-  //             <TitleButton title="Export">
-  //               <HiArrowUp
-  //                 color={colorMode === "light" ? "#000000" : "#ffffff"}
-  //                 size={16}
-  //               />
-  //             </TitleButton>
-  //           </BodyRight>
-  //         </BodyNav>
-  //         <ActionNav>
-  //           <TitleButton
-  //             onClick={() => {
-  //               SetBold(!bold);
-  //             }}
-  //           ></TitleButton>
-  //           <TagBox
-  //             type="text"
-  //             onChange={(e) => {
-  //               setTag(e.target.value);
-  //             }}
-  //             placeholder="Tag"
-  //           />
-  //         </ActionNav>
-  //         <Editor
-  //           placeholder="Start Typing..."
-  //           color={colorMode === "light" ? "#0000000" : "#ffffff"}
-  //           placeholderColor={colorMode === "light" ? "#3d3d3d76" : "#ffffff"}
-  //           onChange={(e) => {
-  //             marked(e.target.value);
-  //           }}
-  //           style={{ fontWeight: bold === true ? "bold" : "normal" }}
-  //           defaultValue={note.content === undefined ? "" : note.content}
-  //         />
-  //       </Body>
-  //     </FlexContainer>
-  //   </Background>
-  // );
+  const createNewDocument = () => {
+    const newDocument = {
+      document_name: createDocumentTitle,
+      description: createDocumentDescription,
+    };
+    window.electronAPI.createDocument(newDocument);
+  };
+  const createNewPage = () => {
+    const newPage = {
+      title: createPageTitle,
+      document_id: activeDocument?.id,
+    };
+    window.electronAPI.createPage(newPage);
+  };
+
   return (
     <div className="w:full h:full">
       <div
@@ -378,8 +112,16 @@ function App() {
         className={`w:70vh h:70vh border-radius:50% bg:${colors[1]} left:80% top:50% position:absolute z:0`}
       ></div>
       {/* actual body of app */}
-      <div className="position:absolute z:100 w:full h:full bg bd:blur(200px) display:flex">
-        <div className="w:25% bg:white display:flex flex-direction:col">
+      <div
+        className={`position:absolute z:100 w:full h:full bg:${
+          colorMode === "light" ? "#ffffff3e" : "#00000078"
+        } bd:blur(200px) bg display:flex`}
+      >
+        <div
+          className={`w:25% bg:${
+            colorMode === "light" ? "white" : "black"
+          } display:flex flex-direction:col`}
+        >
           {/* app navigation */}
           <SideNav
             onDrag={(e) => {
@@ -416,14 +158,8 @@ function App() {
                 color="#293f66"
               ></MenuButton>
             </div>
-            <div>
-              <Link
-                to="/settings"
-                style={{
-                  padding: "5px",
-                  borderRadius: "2px",
-                }}
-              >
+            <div className="display:flex align-items:center align-content:center">
+              <Link to="/settings" className="padding:5px border-radius:2px">
                 <HiCog
                   color={colorMode === "light" ? "black" : "white"}
                   size={16}
@@ -432,26 +168,214 @@ function App() {
             </div>
           </SideNav>
           <div className="height:92vh width:full display:flex flex-direction:col padding:10px">
-            {pages.length > 0 ? (
-              pages.map((page) => {
-                return <div className="bg:gray w:80% margin:auto"></div>;
-              })
+            {documents.length > 0 ? (
+              <>
+                <div className="display:flex width:full justify-content:space-between align-content:center align-items:center">
+                  <h2
+                    className={`color:${
+                      colorMode === "light" ? "#000000" : "#ffffff"
+                    }`}
+                  >
+                    Documents
+                  </h2>
+                  <button
+                    onClick={() => {
+                      setCreateDocumentVisible(!createDocumentVisible);
+                    }}
+                    className={`border:none bg:${
+                      colorMode === "light" ? "#ececec" : "#292929"
+                    } border-radius:5px padding:5px align-content:center align-items:center`}
+                  >
+                    {createDocumentVisible === false ? (
+                      <HiPlus
+                        size={16}
+                        color={colorMode === "light" ? "#000000" : "#ffffff"}
+                      />
+                    ) : (
+                      <HiMinus
+                        size={16}
+                        color={colorMode === "light" ? "#000000" : "#ffffff"}
+                      />
+                    )}
+                  </button>
+                </div>
+                {documents.map((doc) => {
+                  return (
+                    <>
+                      <DocumentItem
+                        document={doc}
+                        setActiveDocument={setActiveDocument}
+                        findActiveDocPages={findActiveDocPages}
+                      />
+                    </>
+                  );
+                })}
+                {createDocumentVisible === true ? (
+                  <>
+                    <CreateDocument
+                      setCreateDocumentDescription={
+                        setCreateDocumentDescription
+                      }
+                      setCreateDocumentTitle={setCreateDocumentTitle}
+                      createNewDocument={createNewDocument}
+                    />
+                  </>
+                ) : (
+                  <></>
+                )}
+              </>
             ) : (
               <>
-                <h2>No Pages</h2>
-                <p className="font:20 font:bold italic color:gray">
+                <h2
+                  className={`color:${
+                    colorMode === "light" ? "black" : "white"
+                  }`}
+                >
+                  No Documents
+                </h2>
+                <p className="font:12 font:bold italic color:gray">
                   Create One
                 </p>
+                <CreateDocument
+                  setCreateDocumentDescription={setCreateDocumentDescription}
+                  setCreateDocumentTitle={setCreateDocumentTitle}
+                  createNewDocument={createNewDocument}
+                />
               </>
             )}
           </div>
           <div className="height:4vh padding:5px display:flex justify-content:space-between align-items:center align-content:center width:full">
-            <h6>{isOnline === States.ONLINE ? "Online" : "Offline"}</h6>
+            <h6
+              className={`color:${
+                colorMode === "light" ? "#000000" : "#ffffff"
+              }`}
+            >
+              {isOnline === States.ONLINE ? "Online" : "Offline"}
+            </h6>
             <Indicator color={isOnline === States.ONLINE ? "green" : "red"} />
           </div>
         </div>
-        <div className="w:25%"></div>
-        <div className="w:50% bg:beryl h:full"></div>
+        {/* page list */}
+        <div className="w:25% padding:10px">
+          {activeDocument === undefined ? (
+            <div className="display:flex flex-direction:col align-items:center align-content:center justify-content:center">
+              <h2
+                className={`font:20 color:${
+                  colorMode === "light" ? "#000000" : "#ffffff"
+                } text-align:center italic font-weight:300`}
+              >
+                Select A Document To See Pages In It
+              </h2>
+            </div>
+          ) : (
+            <>
+              {pages.length > 0 ? (
+                <>
+                  <div className="display:flex w:full justify-content:space-between">
+                    {" "}
+                    <h3>Pages</h3>
+                    <div className="w:20% display:flex justify-content:space-evenly">
+                      <button
+                        title="Create Page"
+                        onClick={() => {
+                          setCreatePageVisible(!createPageVisible);
+                        }}
+                        className={`border:none bg:${
+                          colorMode === "light" ? "#ececec" : "#292929"
+                        } border-radius:5px padding:5px align-content:center align-items:center`}
+                      >
+                        {createPageVisible === false ? (
+                          <HiPlus
+                            size={16}
+                            color={
+                              colorMode === "light" ? "#000000" : "#ffffff"
+                            }
+                          />
+                        ) : (
+                          <HiMinus
+                            size={16}
+                            color={
+                              colorMode === "light" ? "#000000" : "#ffffff"
+                            }
+                          />
+                        )}
+                      </button>
+                      <button
+                        title="Create Tag"
+                        className={`border:none bg:${
+                          colorMode === "light" ? "#ececec" : "#292929"
+                        } border-radius:5px padding:5px align-content:center align-items:center`}
+                      >
+                        <HiHashtag
+                          size={16}
+                          color={colorMode === "light" ? "#000000" : "#ffffff"}
+                        />
+                      </button>
+                    </div>
+                  </div>
+                  {pages.map((page) => {
+                    return (
+                      <NoteItem page={page} setActivePage={setActivePage} />
+                    );
+                  })}
+                  {createPageVisible === true ? (
+                    <CreatePage
+                      createNewPage={createNewPage}
+                      setCreatePageTitle={setCreatePageTitle}
+                    />
+                  ) : (
+                    <></>
+                  )}
+                </>
+              ) : (
+                <>
+                  <div className="display:flex w:full justify-content:space-between align-items:center align-content:center">
+                    <h1
+                      className={`color:${
+                        colorMode === "light" ? "#000000" : "#e4e3e3"
+                      }`}
+                    >
+                      No Files
+                    </h1>
+                    <button
+                      onClick={() => {
+                        setCreatePageVisible(!createPageVisible);
+                      }}
+                      className={`border:none bg:${
+                        colorMode === "light" ? "#ececec" : "#292929"
+                      } border-radius:5px padding:5px align-content:center align-items:center`}
+                    >
+                      {createPageVisible === false ? (
+                        <HiPlus
+                          size={16}
+                          color={colorMode === "light" ? "#000000" : "#ffffff"}
+                        />
+                      ) : (
+                        <HiMinus
+                          size={16}
+                          color={colorMode === "light" ? "#000000" : "#ffffff"}
+                        />
+                      )}
+                    </button>
+                  </div>
+                  {createPageVisible === true ? (
+                    <CreatePage
+                      createNewPage={createNewPage}
+                      setCreatePageTitle={setCreatePageTitle}
+                    />
+                  ) : (
+                    <></>
+                  )}
+                </>
+              )}
+            </>
+          )}
+        </div>
+        {/* editor */}
+        <div className="w:50% h:full">
+          <h1>{activePage?.file_name}</h1>
+          <Editor defaultValue={activePage?.file_content} />
+        </div>
       </div>
     </div>
   );

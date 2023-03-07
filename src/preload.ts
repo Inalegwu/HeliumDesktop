@@ -14,4 +14,10 @@ contextBridge.exposeInMainWorld("electronAPI", {
     ipcRenderer.send("save-pages-to-disk", pages),
   addToRecentPages: (page: any) =>
     ipcRenderer.send("add-to-recent-pages", page),
+  createDocument: (document: any) =>
+    ipcRenderer.send("create-document", document),
+  readDocuments: () => ipcRenderer.invoke("read-documents"),
+  readPagesByDocumentId: (id: any) =>
+    ipcRenderer.invoke("read-pages-by-doc-id", id),
+  createPage: (page: any) => ipcRenderer.send("create-page", page),
 });
